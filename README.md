@@ -73,7 +73,6 @@ Se realiza una petición GET al iniciar el sistema, obteniendo una lista vacía.
 - Código: 200 OK
 - Respuesta: lista vacía
 
-![GET inicial](img/get.png)
 
 ---
 
@@ -83,11 +82,12 @@ Se realiza una petición GET al iniciar el sistema, obteniendo una lista vacía.
 Se crea una nueva tarea enviando un JSON válido.
 
 **Body enviado:**
-```json
+
 {
   "titulo": "Estudiar Spring Boot",
   "descripcion": "Practicar arquitectura en capas"
 }
+
 
 ---
 ----
