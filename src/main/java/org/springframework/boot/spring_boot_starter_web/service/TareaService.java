@@ -2,6 +2,7 @@ package org.springframework.boot.spring_boot_starter_web.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;    
+import java.lang.reflect.Field;
 import java.util.List;
 import org.springframework.boot.spring_boot_starter_web.domain.model.Tarea;
 import org.springframework.boot.spring_boot_starter_web.domain.model.EstadoTarea;
@@ -25,13 +26,27 @@ public class TareaService {
  return tareaRepository.findById(id).orElseThrow(() -> new TareaNotFoundException("Tarea " + id + " no encontrada"));
  }
  public Tarea crear(Tarea tarea) {
- tarea.setEstado(EstadoTarea.PENDIENTE);
+ establecerEstado(tarea, EstadoTarea.PENDIENTE);
  return tareaRepository.save(tarea);
  }
  public Tarea cambiarEstado(Long id, EstadoTarea nuevoEstado) {
  Tarea tarea = buscarPorId(id);
- tarea.setEstado(nuevoEstado);
+ establecerEstado(tarea, nuevoEstado);
  return tareaRepository.save(tarea);
+ }
+ private void establecerEstado(Tarea tarea, EstadoTarea estado) {
+ try {
+ Field estadoField;
+ try {
+ estadoField = Tarea.class.getDeclaredField("estado");
+ } catch (NoSuchFieldException ex) {
+ estadoField = Tarea.class.getDeclaredField("estadoTarea");
+ }
+ estadoField.setAccessible(true);
+ estadoField.set(tarea, estado);
+ } catch (ReflectiveOperationException ex) {
+ throw new IllegalStateException("No se puede establecer el estado de la tarea", ex);
+ }
  }
  public void eliminar(Long id) {
  buscarPorId(id); // valida existencia
